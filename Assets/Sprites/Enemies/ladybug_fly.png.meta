@@ -3,8 +3,8 @@ guid: 80474673628a4a545bb76edf38f26235
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8073703935447732575
-    second: ladybug_fly_0
+      213: 4310774375095262925
+    second: ladyBug_fly_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ladybug_fly_0
+      name: ladyBug_fly_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 64
-        height: 62
+        width: 59
+        height: 42
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1aee6f90c0174ff80800000000000000
-      internalID: -8073703935447732575
+      spriteID: dced8666472f2db30800000000000000
+      internalID: 4310774375095262925
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ladybug_fly_0: -8073703935447732575
+      ladyBug_fly_0: 4310774375095262925
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
