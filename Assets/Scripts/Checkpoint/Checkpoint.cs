@@ -6,6 +6,8 @@ public class Checkpoint : MonoBehaviour
 
     private bool isActivated;//Tracks if checkpoint is active
 
+    public AudioSource checkpointAudioSource;//AudioSource on checkpoint
+
     private void OnTriggerEnter2D(Collider2D other)//Runs when something enters checkpoint
     {
         if (!other.CompareTag("Player"))//Checks if object is not player
@@ -29,6 +31,11 @@ public class Checkpoint : MonoBehaviour
         if (AudioManager.Instance != null)//Checks if AudioManager exists
         {
             AudioManager.Instance.PlayCheckpoint();//Plays checkpoint sound
+        }
+
+        if (checkpointAudioSource != null)//Checks if checkpoint audio exists
+        {
+            checkpointAudioSource.Play();//Plays checkpoint sound in world
         }
     }
 }

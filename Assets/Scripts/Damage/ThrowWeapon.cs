@@ -12,6 +12,8 @@ public class ThrowWeapon : MonoBehaviour
 
     private Collider2D weaponCollider;//The weapons Collider2D
 
+    public AudioClip hitSound;//Sound played where weapon hits
+
     void Start()//Runs once
     {
         weaponCollider = GetComponent<Collider2D>();//Gets the weapons collider
@@ -39,6 +41,11 @@ public class ThrowWeapon : MonoBehaviour
         if (hasHit)//Checks if weapon already hit something
         {
             return;//Stops double damage
+        }
+
+        if (hitSound != null)//Checks if hit sound exists
+        {
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);//Plays sound at weapon position
         }
 
         EnemyHealth enemyHealth = objectHit.GetComponent<EnemyHealth>();//Gets EnemyHealth from object hit

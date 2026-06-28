@@ -20,9 +20,21 @@ public class EnemyHealth : MonoBehaviour
 
     private bool isDead;//Tracks if enemy already died
 
+    public EnemyHealthUI enemyHealthUI;//Enemy world health UI
+
     void Start()//Runs once
     {
         currentHealth = maxHealth;//Starts enemy at full health
+
+        if (enemyHealthUI == null)//Checks if enemy health UI was not assigned
+        {
+            enemyHealthUI = GetComponentInChildren<EnemyHealthUI>();//Finds enemy health UI in child objects
+        }
+
+        if (enemyHealthUI != null)//Checks if enemy health UI exists
+        {
+            enemyHealthUI.UpdateHealth(currentHealth, maxHealth);//Starts health bar full
+        }
 
         animator = GetComponent<Animator>();//Gets Animator
 
@@ -43,6 +55,11 @@ public class EnemyHealth : MonoBehaviour
         }
 
         currentHealth -= damageAmount;//Subtracts enemy health
+
+        if (enemyHealthUI != null)//Checks if enemy health UI exists
+        {
+            enemyHealthUI.UpdateHealth(currentHealth, maxHealth);//Updates enemy health bar
+        }
 
         if (currentHealth <= 0)//Checks if enemy health is gone
         {

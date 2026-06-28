@@ -107,7 +107,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0
+  m_LinearDamping: 0.2
   m_AngularDamping: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -182,3 +182,4 @@ MonoBehaviour:
   damageAmount: 1
   lifeTime: 3
   spinSpeed: 720
+  hitSound: {fileID: 8300000, guid: b0748ac1f77ad4644a9f99b517c28c4b, type: 3}

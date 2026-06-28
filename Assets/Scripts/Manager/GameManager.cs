@@ -1,10 +1,15 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;//Lets other scripts find GameManager
+
+    private static bool startGameplayAfterReload;//Tells scene to skip menus after reload
+
+    private bool gameEnded;//Tracks if player reached game over or victory
 
     public Transform player;//Player object
 
@@ -46,7 +51,19 @@ public class GameManager : MonoBehaviour
 
     public KeyUI keyUI;//Key UI script
 
+    public List<GameObject> screens = new List<GameObject>();//List of all menu/UI screens
+
     public bool hasKey;//Tracks if player collected the key
+
+    public int highScore;//Highest score saved between game sessions
+
+    public TMP_Text highScoreText;//UI high score text
+
+    public TMP_Text gameOverHighScoreText;//High score text on game over screen
+
+    public TMP_Text victoryHighScoreText;//High score text on victory screen
+
+    private Dictionary<string, int> gameStats = new Dictionary<string, int>();//Stores game stats by name
 
     void Awake()//Runs before Start
     {
@@ -72,7 +89,9 @@ public class GameManager : MonoBehaviour
 
         playerPawn = player.GetComponent<PlayerPawn>();//Gets player pawn
 
-        ShowTitleScreen();//Starts on title screen
+        highScore = PlayerPrefs.GetInt("HighScore", 0);//Loads saved high score
+
+        UpdateHighScoreUI();//Updates high score UI
 
         UpdateScoreUI();//Updates score UI
 
@@ -81,6 +100,35 @@ public class GameManager : MonoBehaviour
         if (keyUI != null)//Checks if KeyUI exists
         {
             keyUI.ShowNoKey();//Shows player starts without key
+        }
+
+        if (startGameplayAfterReload)//Checks if game should start after reload
+        {
+            startGameplayAfterReload = false;//Resets the reload flag
+
+            StartGame();//Starts gameplay right away
+        }
+        else
+        {
+            ShowTitleScreen();//Starts on title screen
+        }
+
+        gameStats["Coins"] = 0;//Tracks coins collected
+
+        gameStats["Deaths"] = 0;//Tracks player deaths
+
+        gameStats["EnemiesDefeated"] = 0;//Tracks defeated enemies
+    }
+
+    public void PlayButtonPressed()//Runs when any play button is pressed
+    {
+        if (gameEnded)//Checks if the last game ended
+        {
+            PlayAgain();//Resets gameplay and starts right away
+        }
+        else
+        {
+            StartGame();//Starts game from main menu
         }
     }
 
@@ -116,6 +164,8 @@ public class GameManager : MonoBehaviour
 
         UpdateLivesUI();//Updates lives UI
 
+        gameStats["Deaths"]++;//Adds one death to the stats dictionary
+
         if (currentLives > 0)//Checks if lives remain
         {
             RespawnPlayer();//Respawns player
@@ -146,8 +196,36 @@ public class GameManager : MonoBehaviour
     {
         score += amount;//Adds to score
 
+        gameStats["Coins"]++;//Adds one coin to the stats dictionary
+
         UpdateScoreUI();//Updates score UI
     }
+
+    void SaveHighScore()//Saves high score if player beats it
+    {
+        if (score > highScore)//Checks if current score is higher than high score
+        {
+            highScore = score;//Updates high score
+
+            PlayerPrefs.SetInt("HighScore", highScore);//Saves high score
+
+            PlayerPrefs.Save();//Forces save
+        }
+    }
+
+    void UpdateHighScoreUI()//Updates high score text
+    {
+        if (gameOverHighScoreText != null)//Checks if game over high score text exists
+        {
+            gameOverHighScoreText.text = "High Score: " + highScore;//Sets game over high score text
+        }
+
+        if (victoryHighScoreText != null)//Checks if victory high score text exists
+        {
+            victoryHighScoreText.text = "High Score: " + highScore;//Sets victory high score text
+        }
+    }
+
     public void GetKey()//Runs when player collects the key
     {
         hasKey = true;//Stores that player has the key
@@ -196,25 +274,36 @@ public class GameManager : MonoBehaviour
 
     public void WinGame()//Runs when player reaches door
     {
+        gameEnded = true;//Marks game as ended
+
         if (AudioManager.Instance != null)//Checks if AudioManager exists
         {
             AudioManager.Instance.PlayVictory();//Plays victory sound
         }
+
+        SaveHighScore();//Saves high score
+
+        UpdateHighScoreUI();//Updates high score text
 
         Time.timeScale = 0f;//Pauses game
 
         HideAllScreens();//Turns off screens
 
         victoryScreen.SetActive(true);//Shows victory screen
-
     }
 
     void GameOver()//Runs when player has no lives
     {
+        gameEnded = true;//Marks game as ended
+
         if (AudioManager.Instance != null)//Checks if AudioManager exists
         {
             AudioManager.Instance.PlayGameOver();//Plays game over sound
         }
+
+        SaveHighScore();//Saves high score
+
+        UpdateHighScoreUI();//Updates high score text
 
         Time.timeScale = 0f;//Pauses game
 
@@ -258,6 +347,15 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);//Reloads scene
     }
 
+    public void PlayAgain()//Resets scene and starts gameplay
+    {
+        startGameplayAfterReload = true;//Tells scene to start gameplay after reload
+
+        Time.timeScale = 1f;//Unpauses before reloading
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);//Reloads scene
+    }
+
     public void QuitGame()//Quits game
     {
         Application.Quit();//Quits built game
@@ -267,18 +365,12 @@ public class GameManager : MonoBehaviour
 
     void HideAllScreens()//Turns off all UI screens
     {
-        titleScreen.SetActive(false);//Turns title screen off
-
-        mainMenuScreen.SetActive(false);//Turns main menu off
-
-        gameplayScreen.SetActive(false);//Turns gameplay UI off
-
-        creditsScreen.SetActive(false);//Turns credits off
-
-        audioScreen.SetActive(false);//Turns audio screen off
-
-        gameOverScreen.SetActive(false);//Turns game over off
-
-        victoryScreen.SetActive(false);//Turns victory off
+        foreach (GameObject screen in screens)//Loops through every screen in the list
+        {
+            if (screen != null)//Checks if screen exists
+            {
+                screen.SetActive(false);//Turns screen off
+            }
+        }
     }
 }

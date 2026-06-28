@@ -116,11 +116,11 @@ public class PlayerPawn : MonoBehaviour
         {
             if (facingRight)//Checks if player is facing right
             {
-                weaponRb.linearVelocity = Vector2.right * throwForce;//Throws weapon right
+                weaponRb.AddForce(Vector2.right * throwForce, ForceMode2D.Impulse);//Throws weapon right with force
             }
             else
             {
-                weaponRb.linearVelocity = Vector2.left * throwForce;//Throws weapon left
+                weaponRb.AddForce(Vector2.left * throwForce, ForceMode2D.Impulse);//Throws weapon left with force
             }
         }
 

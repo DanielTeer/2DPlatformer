@@ -4,14 +4,17 @@ public class MenuButtons : MonoBehaviour
 {
     public void PlayButton()//Runs when Play button is pressed
     {
-        GameManager.instance.StartGame();//Starts gameplay
+        GameManager.instance.PlayButtonPressed();//Starts game or resets after game ended
+    }
+
+    public void PlayAgainButton()//Runs when Play Again button is pressed
+    {
+        GameManager.instance.PlayAgain();//Resets gameplay and starts right away
     }
 
     public void MainMenuButton()//Runs when Main Menu button is pressed
     {
-        Time.timeScale = 1f;//Unpauses game
-
-        GameManager.instance.ShowMainMenu();//Shows main menu
+        GameManager.instance.ShowMainMenu();//Shows main menu without resetting
     }
 
     public void CreditsButton()//Runs when Credits button is pressed
@@ -21,12 +24,12 @@ public class MenuButtons : MonoBehaviour
 
     public void AudioButton()//Runs when Audio button is pressed
     {
-        GameManager.instance.ShowAudioSettings();//Shows audio settings
+        GameManager.instance.ShowAudioSettings();//Shows audio settings screen
     }
 
     public void RestartButton()//Runs when restart/play again is pressed
     {
-        GameManager.instance.RestartLevel();//Restarts scene
+        GameManager.instance.PlayAgain();//Resets gameplay and starts right away
     }
 
     public void QuitButton()//Runs when quit is pressed
